@@ -13,37 +13,55 @@ class Home extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 15),
         child: Column(
           children: [
-           Container(
-             decoration: BoxDecoration(
-               color: RemWhite,
-               borderRadius: BorderRadius.circular(20),
-             ),
-             child: TextField(
-               decoration: InputDecoration(
-                 contentPadding: EdgeInsets.all(0),
-                 prefixIcon: Icon(
-                   Icons.search,
-                   color: RemBlack,
-                   size: 20,
-               ),
-                 prefixIconConstraints: BoxConstraints(
-                   minWidth: 25,
-                   minHeight: 20,
-                 ),
-                 border: InputBorder.none,
-                  hintText: 'Search',
-                 hintStyle: TextStyle(
-                   color: RemGrey,
-               ),
-             ),
-           ),
-           ),
+           searchBox(),
+            Expanded(
+              child: ListView(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(top: 50,bottom: 20),
+                    child: Text(
+                      'Tasks To Do',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
           ],
         ),
         ),
       );
   }
-
+  Widget searchBox() {
+    return Container(
+        decoration: BoxDecoration(
+          color: RemWhite,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: TextField(
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.all(0),
+            prefixIcon: Icon(
+              Icons.search,
+              color: RemBlack,
+              size: 20,
+            ),
+            prefixIconConstraints: BoxConstraints(
+              minWidth: 25,
+              minHeight: 20,
+            ),
+            border: InputBorder.none,
+            hintText: 'Search',
+            hintStyle: TextStyle(
+              color: RemGrey,
+            ),
+          ),
+        ),
+      );
+  }
   AppBar _buildAppBar() {
     return AppBar(
       backgroundColor: RemWhite,
