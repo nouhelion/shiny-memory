@@ -1,7 +1,11 @@
-// ignore_for_file: prefer_const_constructors, sized_box_for_whitespace
+// ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, depend_on_referenced_packages, unused_import, unused_element, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:memory/screens/home.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -11,9 +15,10 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   @override
-
-    Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Authentification"),
@@ -37,6 +42,7 @@ class _LoginState extends State<Login> {
               //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
+                controller: _emailController,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Email',
@@ -48,7 +54,7 @@ class _LoginState extends State<Login> {
                   left: 15.0, right: 15.0, top: 15, bottom: 0),
               //padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
-
+                controller: _passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
@@ -63,7 +69,8 @@ class _LoginState extends State<Login> {
               height: 50,
               width: 250,
               decoration: BoxDecoration(
-                  color: Colors.blueGrey, borderRadius: BorderRadius.circular(20)),
+                  color: Colors.blueGrey,
+                  borderRadius: BorderRadius.circular(20)),
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.push(
@@ -84,4 +91,15 @@ class _LoginState extends State<Login> {
       ),
     );
   }
+  Future signIn() async {
+    final User? user = (await _auth.signInWithEmailAndPassword(
+            email: _emailController.text, password: _passwordController.text))
+        .user;
+    if (user != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) =>  Home()),
+      );
+    }
   }
+}
