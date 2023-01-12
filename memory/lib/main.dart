@@ -1,8 +1,13 @@
+// ignore_for_file: prefer_const_constructors, depend_on_referenced_packages, unused_import
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:memory/screens/home.dart';
+import 'package:memory/screens/login.dart';
 
-void main() {
+void main() async {
+   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -18,8 +23,9 @@ class MyApp extends StatelessWidget {
     ));
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      color: Colors.blueGrey,
       title:'Todo App',
-      home: Home(),
+      home:Login(),
     );
   }
 }
