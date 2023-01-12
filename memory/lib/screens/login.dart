@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:memory/screens/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:memory/screens/signup.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -65,40 +66,54 @@ class _LoginState extends State<Login> {
             SizedBox(
               height: 20,
             ),
-            Container(
-              height: 50,
-              width: 250,
-              decoration: BoxDecoration(
-                  color: Colors.blueGrey,
-                  borderRadius: BorderRadius.circular(20)),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                      context, MaterialPageRoute(builder: (_) => Home()));
-                },
-                child: Text(
-                  'Login',
-                  style: TextStyle(color: Colors.white, fontSize: 15),
-                ),
+            TextButton(
+              style: ButtonStyle(
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.blueGrey),
               ),
+              onPressed: signIn,
+              child: Text('Login'),
             ),
             SizedBox(
-              height: 130,
+              height: 20,
             ),
-            Text('New User? Create Account')
+            TextButton(
+              style: ButtonStyle(
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.blueGrey),
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Register()),
+                );
+              },
+              child: Text('Register'),
+            )
           ],
         ),
       ),
     );
   }
+
   Future signIn() async {
+    showDialog(
+      context: context,
+      barrierDismissible:
+          false, // set to false to prevent the user from dismissing the dialog by tapping outside the dialog
+      builder: (context) {
+        return AlertDialog(
+          content: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+    );
     final User? user = (await _auth.signInWithEmailAndPassword(
             email: _emailController.text, password: _passwordController.text))
         .user;
     if (user != null) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) =>  Home()),
+        MaterialPageRoute(builder: (context) => Home()),
       );
     }
   }

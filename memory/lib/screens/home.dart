@@ -1,9 +1,14 @@
-// ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, sized_box_for_whitespace
+// ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, sized_box_for_whitespace, depend_on_referenced_packages, unused_element, await_only_futures
 
 import 'package:flutter/material.dart';
 import '../model/todo.dart';
 import '../widgets/todo_item.dart';
 import '../constants/colors.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
+final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
@@ -15,7 +20,13 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final todosList = ToDo.todoList();
   List<ToDo> _foundToDo = [];
-  final _todoController= TextEditingController();
+  final _todoController = TextEditingController();
+
+  Future<String?> getUserName() async {
+    User user = await FirebaseAuth.instance.currentUser!;
+    String result = user.uid;
+    return result;
+  }
 
   @override
   void initState() {
@@ -83,23 +94,29 @@ class _HomeState extends State<Home> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: TextField(
-                    controller: _todoController,
+                      controller: _todoController,
                       decoration: InputDecoration(
-                    hintText: 'Add a new task',
-                    border: InputBorder.none,
-                  )),
+                        hintText: 'Add a new task',
+                        border: InputBorder.none,
+                      )),
                 ),
               ),
               Container(
-                margin:EdgeInsets.only(bottom: 20,right: 20,),
-                child:ElevatedButton(
-                  child: Text('+',style: TextStyle(fontSize: 30),),
-                  onPressed: (){
+                margin: EdgeInsets.only(
+                  bottom: 20,
+                  right: 20,
+                ),
+                child: ElevatedButton(
+                  child: Text(
+                    '+',
+                    style: TextStyle(fontSize: 30),
+                  ),
+                  onPressed: () {
                     _addToDoItem(_todoController.text);
                   },
-                  style:ElevatedButton.styleFrom(
-                    backgroundColor:Remblue,
-                    minimumSize: Size(40,40),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Remblue,
+                    minimumSize: Size(40, 40),
                     elevation: 10,
                   ),
                 ),
@@ -125,12 +142,9 @@ class _HomeState extends State<Home> {
 
   void _addToDoItem(String toDo) {
     setState(() {
-      todosList.add(ToDo(id: DateTime
-          .now()
-          .millisecondsSinceEpoch
-          .toString(),
-          todoText: toDo
-      ));
+      todosList.add(ToDo(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          todoText: toDo));
     });
     _todoController.clear();
   }
@@ -141,8 +155,9 @@ class _HomeState extends State<Home> {
       results = todosList;
     } else {
       results = todosList
-          .where((item) =>
-      item.todoText!.toLowerCase().contains(enteredKeyword.toLowerCase()))
+          .where((item) => item.todoText!
+              .toLowerCase()
+              .contains(enteredKeyword.toLowerCase()))
           .toList();
     }
 
@@ -184,23 +199,26 @@ class _HomeState extends State<Home> {
 
   AppBar _buildAppBar() {
     return AppBar(
-      backgroundColor: RemWhite,
-      elevation: 0,
-      title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Icon(
-          Icons.menu,
-          color: RemBlack,
-          size: 30,
-        ),
-        Container(
-          height: 40,
-          width: 40,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(30),
-            child: Image.asset('assets/images/cat.png'),
-          ),
-        ),
-      ]),
-    );
+        backgroundColor: RemWhite,
+        elevation: 0,
+        title: Row(
+          children: [
+            Text(
+              getUserName().toString(),
+              style: TextStyle(
+                color: RemBlack,
+                fontSize: 20,
+              ),
+            ),
+            Container(
+              height: 40,
+              width: 40,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(30),
+                child: Image.asset('assets/images/cat.png'),
+              ),
+            ),
+          ],
+        ));
   }
 }
